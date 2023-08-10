@@ -1,3 +1,0 @@
-list of requirements
-
-python3
