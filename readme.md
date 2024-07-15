@@ -21,4 +21,6 @@ cleaned the entire code up and put everything in litlle functions
 
 development will be done on develop branch
 TODO
-add logging feature
+add logging feature DONE
+add more tags and attributes
+oce external links are found, recursively visit each link
