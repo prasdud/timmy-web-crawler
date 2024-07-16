@@ -15,12 +15,17 @@ OSError: Could not find a suitable TLS CA certificate bundle, invalid path: ca_b
 
 program runs into error if certificate is not trusted in all browsers according to sslshopper.com works on sites without any errors on sslshopper.com
 
+16-7-2024
+ssl issue doesnt arise anymore, i did not fix it, i do not know how it works now. all i know is it works
+
+
 15-7-2024
 MAJOR refactoring
 cleaned the entire code up and put everything in litlle functions
 
 development will be done on develop branch
-TODO
-add logging feature DONE
-add more tags and attributes
-oce external links are found, recursively visit each link
+GOALS
+
+
+
+once external links are found, recursively visit each link

@@ -13,7 +13,7 @@ from requests.packages.urllib3.exceptions import InsecureRequestWarning
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s [%(levelname)s] %(message)s",
-    datefmt="%Y-%m-%d %H:%M:%S",
+    datefmt="%H:%M:%S",
 )
 
 
@@ -30,8 +30,9 @@ forward_schemes=("http","ftp","mailto","file","data")
 backward_schemes=(".php",".png",".jpeg",".jpg",".css",".xml",".html",".js",".gif",".csv",".svg",".mp3",".mp4",".zip",".txt",".doc",".docx",".pdf")
 
 
-tags = ("img", "rel", "a")
-attrs = ("href", "src")
+tags = ("img", "rel", "a", "link", "script", "video", "audio", "source", "embed", "object", "iframe", "form", "input")
+attrs = ("href", "src", "srcset", "data", "action", "formaction", "manifestat", "poster", "xlink:href")
+
 #verify ssl certificates uncomment
 #link=requests.get(args.link,verify=ca_bundle_path)
 
@@ -39,16 +40,18 @@ attrs = ("href", "src")
 def parse_args():
     parser=argparse.ArgumentParser()
     parser.add_argument('-l','--link',required = True,  help="enter link to scrape")
-    parser.add_argument('-sd','--ssld', action="store_true", help="disable ssl verification")
-    parser.add_argument('-f', '--file',required = True,  action="store_true", help="find files")
+    parser.add_argument('-sd','--ssldisable', action="store_true", help="disable ssl verification")
+    parser.add_argument('-b', '--backward',required = False,  action="store_true", help="runs backward parser, for files")
+    parser.add_argument('-f', '--forward',required = False,  action="store_true", help="runs forward parser, for files")
+    logging.info(f"{parser}")
     return parser.parse_args()
 
 
 
 def ssl_verification_handler(args):
     try:
-        if args.ssld:
-            link=requests.get(args.link, verify=False)
+        if args.ssldisable:
+            link=requests.get(args.link, verify=False) #verifies the servers TLS certificate
             print("SSL verification disabled!")
             main_parser(link , args)
         #link=requests.get(args.link,verify=ca_bundle_path)
@@ -82,22 +85,25 @@ def main_parser(link, args):
     print("start main parser")
     soup = bsp(link.text, "html.parser")
     urls = set()
-    if args.file:
+    if args.backward:
         backward_parser(link, soup, urls)
-    else:
+    elif args.forward:
         forward_parser(link, soup, urls)
     print("done main parser")
 
 def forward_parser(link, soup, urls):
+    print("start forward parser")
     for link in soup.find_all(tags):
-        href = link.get_all(attrs)
-        if href:
-            if href.startswith(forward_schemes):
-                for scheme in forward_schemes:
-                    if href.startswith(scheme):
-                        logging.info(f"{href} (Scheme: {scheme})")
-                        urls.add(href)
-                        break
+        for attr in attrs:
+            href = link.get(attr)
+            if href:
+                if href.startswith(forward_schemes):
+                    for scheme in forward_schemes:
+                        if href.startswith(scheme):
+                            logging.info(f"{href} (Scheme: {scheme})")
+                            urls.add(href)
+                            break
+    print("end forward parser")
     return urls
 
 def backward_parser(link, soup, urls):
