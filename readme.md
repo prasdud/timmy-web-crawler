@@ -24,8 +24,9 @@ MAJOR refactoring
 cleaned the entire code up and put everything in litlle functions
 
 development will be done on develop branch
+
 GOALS
-
-
-
 once external links are found, recursively visit each link
+
+TODO
+-color code different file types , logging module
