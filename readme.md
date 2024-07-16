@@ -30,3 +30,4 @@ once external links are found, recursively visit each link
 
 TODO
 -color code different file types , logging module
+-argument to download all files, backward or forward
