@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+import threading
+import time
 import logging
 import sys
 import certifi
@@ -42,7 +44,14 @@ def parse_args():
     parser.add_argument('-l','--link',required = True,  help="enter link to scrape")
     parser.add_argument('-sd','--ssldisable', action="store_true", help="disable ssl verification")
     parser.add_argument('-b', '--backward',required = False,  action="store_true", help="runs backward parser, for files")
-    parser.add_argument('-f', '--forward',required = False,  action="store_true", help="runs forward parser, for files")
+    parser.add_argument('-f', '--forward',required = False, action="store_true", help="runs forward parser, for files")
+    #to add arguments
+    parser.add_argument('-rc', '--recursivecrawl',required = False,  action="store_true", help="recursively crawls each link found")
+    parser.add_argument('-t', '--timer', type = int, required = True, help="runs script for time in seconds")
+    parser.add_argument('-wf', '--write',required = False,  action="store_true", help="writes output to file")
+    logging.info(f"{parser}")
+    logging.info(f"{parser}")
+    logging.info(f"{parser}")
     logging.info(f"{parser}")
     return parser.parse_args()
 
@@ -104,7 +113,8 @@ def forward_parser(link, soup, urls):
                             urls.add(href)
                             break
     print("end forward parser")
-    return urls
+    sys.exit()
+    #return urls
 
 def backward_parser(link, soup, urls):
     print("start backward parser")
@@ -119,18 +129,41 @@ def backward_parser(link, soup, urls):
                             urls.add(href)
                             break
     print("return backward parser")
-    return urls
-
+    sys.exit()
+    #return urls
 
 
 
 def main():
     args=parse_args()
+    #manage_thread(args.timer)
+    start_time = time.time()
     link=requests.get(args.link)
     ssl_verification_handler(args)
+    while time.time() - start_time < args.timer:
+        time.sleep(1)
+    print("time limit exceeded, exiting")
+    sys.exit()
     
+
+def manage_thread(lifespan):
+    #global stop_thread
+    main_thread = threading.Thread(target = main)
+    main_thread.start()
+    print("thread started")
+    #time.sleep(lifespan)
+    #stop_thread = True
+    main_thread.join(lifespan)
+    if main_thread.is_alive():
+        print("thread running, terminating now")
+        sys.exit()
+    print("thread stopped")
 
 
 
 if __name__ == "__main__":
-    main()
+    args = parse_args()
+    if args.timer:
+        manage_thread(args.timer)
+    else:
+        main()
