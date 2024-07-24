@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+
+import os
 import threading
 import time
 import logging
@@ -44,15 +46,15 @@ def parse_args():
     parser.add_argument('-l','--link',required = True,  help="enter link to scrape")
     parser.add_argument('-sd','--ssldisable', action="store_true", help="disable ssl verification")
     parser.add_argument('-b', '--backward',required = False,  action="store_true", help="runs backward parser, for files")
-    parser.add_argument('-f', '--forward',required = False, action="store_true", help="runs forward parser, for files")
-    #to add arguments
-    parser.add_argument('-rc', '--recursivecrawl',required = False,  action="store_true", help="recursively crawls each link found")
+    parser.add_argument('-f', '--forward',required = False, action="store_true", help="runs forward parser, for files") 
     parser.add_argument('-t', '--timer', type = int, required = True, help="runs script for time in seconds")
     parser.add_argument('-wf', '--write',required = False,  action="store_true", help="writes output to file")
-    logging.info(f"{parser}")
-    logging.info(f"{parser}")
-    logging.info(f"{parser}")
-    logging.info(f"{parser}")
+    #to add arguments
+    parser.add_argument('-rc', '--recursivecrawl',required = False,  action="store_true", help="recursively crawls each link found")
+    #logging.info(f"{parser}")
+    #logging.info(f"{parser}")
+    #logging.info(f"{parser}")
+    #logging.info(f"{parser}")
     return parser.parse_args()
 
 
@@ -90,17 +92,27 @@ def ssl_verification_handler(args):
 ##print(link.text)
 
 
+def generate_file_name(url, log_dest = "logs"):
+    # Extract the base name from the URL
+    base_name = os.path.basename(url)
+    if not base_name:
+        base_name = "output"
+    file_name = os.path.join(log_dest, f"{base_name}.txt")
+    return file_name
+
 def main_parser(link, args):
     print("start main parser")
     soup = bsp(link.text, "html.parser")
     urls = set()
-    if args.backward:
-        backward_parser(link, soup, urls)
-    elif args.forward:
-        forward_parser(link, soup, urls)
+    file_name = generate_file_name(args.link)
+    with open(file_name, "w+") as file:
+        if args.backward:
+            backward_parser(link, soup, urls, file)
+        elif args.forward:
+            forward_parser(link, soup, urls, file)
     print("done main parser")
 
-def forward_parser(link, soup, urls):
+def forward_parser(link, soup, urls, file):
     print("start forward parser")
     for link in soup.find_all(tags):
         for attr in attrs:
@@ -109,14 +121,16 @@ def forward_parser(link, soup, urls):
                 if href.startswith(forward_schemes):
                     for scheme in forward_schemes:
                         if href.startswith(scheme):
-                            logging.info(f"{href} (Scheme: {scheme})")
+                            text_buffer = f"{href} (Scheme: {scheme})"
+                            logging.info(text_buffer)
+                            file.write(text_buffer + "\n")
                             urls.add(href)
                             break
     print("end forward parser")
     sys.exit()
     #return urls
 
-def backward_parser(link, soup, urls):
+def backward_parser(link, soup, urls, file):
     print("start backward parser")
     for link in soup.find_all(tags):
         for attr in attrs: 
@@ -125,7 +139,9 @@ def backward_parser(link, soup, urls):
                 if href.endswith(backward_schemes):
                     for scheme in backward_schemes:
                         if href.endswith(scheme):
-                            logging.info(f"{href} (Scheme: {scheme})")
+                            text_buffer = f"{href} (Scheme: {scheme})"
+                            logging.info(text_buffer)
+                            file.write(text_buffer + "\n")
                             urls.add(href)
                             break
     print("return backward parser")

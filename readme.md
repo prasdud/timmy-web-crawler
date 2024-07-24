@@ -25,9 +25,22 @@ cleaned the entire code up and put everything in litlle functions
 
 development will be done on develop branch
 
+
+24-7-2024
+added additional features, forward and backward parser
+added function to buffer output to external file
+    error when using { https://youtube.com/ }, so use { https://youtube.com }, no backslash
+added time flag, script will only run for specified time in seconds
+used threading
+
+the codebase is a MESS. it looks ugly, but it works so i dont want to change a lot right now.
+next task is to maybe draw out a flowchart of script execution, map out exactly what is being done, because right now, i, the guy who wrote this is very confused and then clean the code up. maybe put it all in different modules
+after doing this, will push to main
+
+
 GOALS
 once external links are found, recursively visit each link
 
 TODO
--color code different file types , logging module
--argument to download all files, backward or forward
+-color code different file types (do i have to do this?)
+-
