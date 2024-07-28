@@ -182,4 +182,4 @@ if __name__ == "__main__":
     if args.timer:
         manage_thread(args.timer)
     else:
-        main()
+        sys.exit()
