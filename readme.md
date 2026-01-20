@@ -1,46 +1,111 @@
-This is a webcrawler written in python.
+# Timmy 🕷️
 
-You can use it to crawl a domain and get all subdomains, sites, files hosted on it.
+Timmy is a simple web crawler written in Python.
 
-to be used purely for educational purposes.
+It can crawl a given domain and discover:
+- Subdomains  
+- Pages  
+- Files hosted on the domain  
 
-will call it timmy.
+This project is intended **purely for educational purposes**.
+
+---
+## Deprecated, Dev Note
+
+This was the first actual thing i built. Proud of it. However not working on it anymore.
+---
+
+## Features
+
+- Domain crawling
+- Subdomain discovery
+- Forward and backward parsing
+- Optional output buffering to an external file
+- Time-limited execution (run for *n* seconds)
+- Multithreaded crawling
+
+---
+
+## Usage Notes
+
+- When crawling YouTube, use:
+
+https://youtube.com
+
+**Do not** include a trailing slash:
+
+https://youtube.com/
+
+This causes an error.
+
+---
+
+## Development History
+
+### 15-07-2024
+- **Major refactor**
+- Cleaned up the entire codebase
+- Broke logic into smaller functions
+- Active development moved to the `develop` branch
+
+---
+
+### 16-07-2024
+- SSL certificate issue no longer occurs  
+- No explicit fix was applied  
+- Unclear why it now works, but it does
+
+---
+
+### 24-07-2024
+- Added forward and backward parsers
+- Added output buffering to external files
+- Added time flag (crawler runs for a fixed number of seconds)
+- Introduced threading
+
+---
+
+## Known Issues (Historical)
+
+During early development, SSL-related errors occurred:
+
+[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed:
+unable to get local issuer certificate (_ssl.c:997)
+
+OSError: Could not find a suitable TLS CA certificate bundle,
+invalid path: ca_bundle.crt
 
 
-issues during development--
-[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:997)')))
+The crawler failed on sites whose certificates were not trusted by all browsers, based on checks from sslshopper.com.  
+This issue no longer appears as of 16-07-2024.
 
-raise IOError("Could not find a suitable TLS CA certificate bundle, "
-OSError: Could not find a suitable TLS CA certificate bundle, invalid path: ca_bundle.crt
+---
 
-program runs into error if certificate is not trusted in all browsers according to sslshopper.com works on sites without any errors on sslshopper.com
+## Current State
 
-16-7-2024
-ssl issue doesnt arise anymore, i did not fix it, i do not know how it works now. all i know is it works
+The codebase is **messy and ugly**, but functional.  
+Refactoring is intentionally paused to avoid breaking working behavior.
 
+Even the author is currently confused by the execution flow.
 
-15-7-2024
-MAJOR refactoring
-cleaned the entire code up and put everything in litlle functions
+---
 
-development will be done on develop branch
+## Planned Cleanup
 
+- Draw a full execution flowchart
+- Map out crawler logic end-to-end
+- Split logic into proper modules
+- Perform a controlled refactor
+- Merge into `main` branch after cleanup
 
-24-7-2024
-added additional features, forward and backward parser
-added function to buffer output to external file
-    error when using { https://youtube.com/ }, so use { https://youtube.com }, no backslash
-added time flag, script will only run for specified time in seconds
-used threading
+---
 
-the codebase is a MESS. it looks ugly, but it works so i dont want to change a lot right now.
-next task is to maybe draw out a flowchart of script execution, map out exactly what is being done, because right now, i, the guy who wrote this is very confused and then clean the code up. maybe put it all in different modules
-after doing this, will push to main
+## Goals
 
+- Once external links are discovered, recursively crawl each of them
 
-GOALS
-once external links are found, recursively visit each link
+---
 
-TODO
--color code different file types (do i have to do this?)
--
+## TODO
+
+- Color-code different file types (questionable usefulness)
